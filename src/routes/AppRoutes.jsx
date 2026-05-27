@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
-import Dashboard from '../pages/Dashboard';
+import JournalDashboard  from '../pages/JournalDashboard';
 import LandingPage from '../pages/LandingPage';
 
 const AppRoutes = () => {
@@ -26,8 +26,8 @@ const AppRoutes = () => {
                 />
 
                 <Route
-                    path="/dashboard"
-                    element={<Dashboard />}
+                    path="/journal-dashboard"
+                    element={<JournalDashboard />}
                 />
 
             </Routes>

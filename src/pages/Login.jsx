@@ -24,7 +24,7 @@ const Login = () => {
 
             login(response.data);
 
-            navigate('/dashboard');
+            navigate('/journal-dashboard');
 
         } catch (error) {
             alert('Invalid Credentials');
