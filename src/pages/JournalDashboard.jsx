@@ -4,7 +4,6 @@ import API from "../api/axiosConfig";
 import "./JournalDashboard.css";
 
 export default function JournalDashboard() {
-
   const [journals, setJournals] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
@@ -18,9 +17,7 @@ export default function JournalDashboard() {
   }, []);
 
   const fetchJournals = async () => {
-
     try {
-
       const token = localStorage.getItem("token");
 
       const response = await API.get("/journal", {
@@ -30,16 +27,13 @@ export default function JournalDashboard() {
       });
 
       setJournals(response.data);
-
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleSave = async () => {
-
     try {
-
       const token = localStorage.getItem("token");
 
       await API.post(
@@ -52,7 +46,7 @@ export default function JournalDashboard() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       setTitle("");
@@ -61,14 +55,33 @@ export default function JournalDashboard() {
       setShowModal(false);
 
       fetchJournals();
-
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleLogout = () => {
 
+
+  const handleDelete = async (_id) => {
+
+  try {
+
+    const token = localStorage.getItem("token");
+
+    await API.delete(`/journal/id/${_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    fetchJournals();
+
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+  const handleLogout = () => {
     localStorage.removeItem("token");
 
     navigate("/login");
@@ -76,15 +89,10 @@ export default function JournalDashboard() {
 
   return (
     <div className="dashboard-container">
-
       <div className="dashboard-wrapper">
-
         <div className="dashboard-header">
-
           <div>
-            <h1 className="dashboard-title">
-              Journal Dashboard
-            </h1>
+            <h1 className="dashboard-title">Journal Dashboard</h1>
 
             <p className="dashboard-subtitle">
               Write and manage your daily journals.
@@ -92,73 +100,52 @@ export default function JournalDashboard() {
           </div>
 
           <div className="header-buttons">
-
-            <button
-              onClick={() => setShowModal(true)}
-              className="add-button"
-            >
+            <button onClick={() => setShowModal(true)} className="add-button">
               +
             </button>
 
-            <button
-              onClick={handleLogout}
-              className="logout-button"
-            >
+            <button onClick={handleLogout} className="logout-button">
               Logout
             </button>
-
           </div>
         </div>
 
         {journals.length === 0 ? (
-
           <div className="empty-state">
-
-            <h2 className="empty-title">
-              No Journal Entries Yet
-            </h2>
+            <h2 className="empty-title">No Journal Entries Yet</h2>
 
             <p className="empty-subtitle">
               Click the plus button to create your first journal.
             </p>
-
           </div>
-
         ) : (
-
           <div className="journal-grid">
+ {journals?.map((journal) => (
+  <div key={journal.id} className="journal-card">
+    <h2 className="journal-card-title">
+      {journal.title}
+    </h2>
 
-            {journals.map((journal) => (
+    <p className="journal-card-content">
+      {journal.content}
+    </p>
 
-              <div
-                key={journal.id}
-                className="journal-card"
-              >
-
-                <h2 className="journal-card-title">
-                  {journal.title}
-                </h2>
-
-                <p className="journal-card-content">
-                  {journal.content}
-                </p>
-
-              </div>
-            ))}
-
+    <button
+      onClick={() => handleDelete(journal.id)}
+      className="delete-button"
+    >
+      Delete
+    </button>
+  </div>
+))}
           </div>
         )}
       </div>
 
       {showModal && (
-
         <div className="modal-overlay">
-
           <div className="modal-card">
-
-            <h2 className="modal-title">
-              New Journal Entry
-            </h2>
+            <h2 className="modal-title">New Journal Entry</h2>
 
             <input
               type="text"
@@ -177,7 +164,6 @@ export default function JournalDashboard() {
             />
 
             <div className="modal-actions">
-
               <button
                 onClick={() => setShowModal(false)}
                 className="cancel-button"
@@ -185,16 +171,9 @@ export default function JournalDashboard() {
                 Cancel
               </button>
 
-              <button
-                onClick={handleSave}
-                className="save-button"
-              >
+              <button onClick={handleSave} className="save-button">
                 Save
               </button>
-
-
-
-
             </div>
           </div>
         </div>

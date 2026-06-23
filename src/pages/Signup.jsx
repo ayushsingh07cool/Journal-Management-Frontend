@@ -8,24 +8,40 @@ const Signup = () => {
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
 
+    const [message, setMessage] = useState('');
+const [isError, setIsError] = useState(false);
+
+    
     const navigate = useNavigate();
 
-    const handleSignup = async (e) => {
-        e.preventDefault();
+const handleSignup = async (e) => {
+    e.preventDefault();
 
-        try {
-          await API.post('/public/signup', {
-    userName,
-    password
-});
+    setMessage('');
 
-            alert('Signup Successful');
+    try {
+        await API.post('/public/signup', {
+            userName,
+            password
+        });
+
+        setMessage('Signup Successful');
+        setIsError(false);
+
+        setTimeout(() => {
             navigate('/');
+        }, 1000);
 
-        } catch (error) {
-            alert('Signup Failed');
+    } catch (error) {
+        setIsError(true);
+
+        if (error.response?.status === 409) {
+            setMessage(error.response.data);
+        } else {
+            setMessage('Signup Failed');
         }
-    };
+    }
+};
 
 
     const loginNavigate = () => {
@@ -38,6 +54,14 @@ const Signup = () => {
 
                 <h2>Create Account</h2>
 
+
+            
+
+{message && (
+    <div className={`message ${isError ? 'error' : 'success'}`}>
+        {message}
+    </div>
+)}
                 <input
                     type="text"
                     placeholder="Username"
